@@ -19,4 +19,5 @@ from main.utils.env_loader import env_loader
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/', include('main.apps.user.api.urls')),
 ]

@@ -24,6 +24,8 @@ class Default:
     DB_HOST:str
     DB_PORT:int
     RPC_URL:str
+    OWL_API_KEY:str
+    OWL_PROJECT_ID:str
     
 
 env_loader = Default(
@@ -39,4 +41,6 @@ env_loader = Default(
     DB_HOST=os.environ.get('DB_HOST'),
     DB_PORT=os.environ.get('DB_PORT'),
     RPC_URL=os.environ.get('RPC_URL'),
+    OWL_API_KEY=os.environ.get('OWL_API_KEY'),
+    OWL_PROJECT_ID=os.environ.get('OWL_PROJECT_ID'),
 )

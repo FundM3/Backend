@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'main.apps.user',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -89,6 +90,12 @@ DATABASES = {
         'PORT': env_loader.DB_PORT
     }
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+AUTH_USER_MODEL = 'user.CustomUser'
 
 
 # Password validation

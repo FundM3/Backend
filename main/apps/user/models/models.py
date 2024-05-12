@@ -32,18 +32,21 @@ class CustomUserManager(BaseUserManager):
         print(response)
         return safe_address
 
-    def create_user(self, email, password, **extra_fields):
-        userId = self.create_wallet_for_user(email)
-        wallet_address = self.get_user_address(userId)
-
-        user = self.model(
-            email=self.normalize_email(email),
-            wallet_address=wallet_address,
-            password=password,
-            **extra_fields
-        )
-
-        user.set_password(password)
+    def create_user(self, email, password=None, wallet_address=None, is_wallet_connected=False, **extra_fields):
+        if not email:
+            raise ValueError('The Email must be set')
+        
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        
+        if password:
+            user.set_password(password)
+        
+        if not wallet_address and not is_wallet_connected:
+            userId = self.create_wallet_for_user(email)
+            wallet_address = self.get_user_address(userId)
+        
+        user.wallet_address = wallet_address
         user.save(using=self._db)
         return user
 

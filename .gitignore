@@ -161,3 +161,6 @@ cython_debug/
 
 .vscode
 nohup.out
+
+main/media/*
+!main/media/.gitkeep

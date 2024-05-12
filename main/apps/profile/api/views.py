@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from main.apps.profile.serializers.serializer import UpdateProfileSerializer
+from django.shortcuts import get_object_or_404
+from main.apps.profile.serializers.serializer import UpdateProfileSerializer, ProfileReadSerializer, ProfileListSerializer
 from main.apps.profile.models import Profile
 from main.apps.user.models import CustomUser
 
@@ -27,3 +28,16 @@ def update_profile_view(request):
         return Response({'status': 'success', 'message': message})
     else:
         return Response(serializer.errors, status=400)
+
+@api_view(['GET'])
+def get_profile_view(request, address):
+    profile = get_object_or_404(Profile, user__wallet_address=address)
+    print('profile', profile)
+    serializer = ProfileReadSerializer(profile)
+    return Response({'status': 'success', 'data': serializer.data})
+
+@api_view(['GET'])
+def get_profile_list(request):
+    profiles = Profile.objects.all()
+    serializer = ProfileListSerializer(profiles, many=True)
+    return Response({'status': 'success', 'data': serializer.data})

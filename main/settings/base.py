@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'main.apps.user',
     'main.apps.profile',
+    'main.apps.project',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

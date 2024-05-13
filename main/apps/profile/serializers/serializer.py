@@ -9,13 +9,19 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
         fields = ['name', 'profile_img', 'visible', 'x_url', 'github_url', 'telegram_url']
         extra_kwargs = {'profile_img': {'required': False}}
 
+class LinkSerializer(serializers.Serializer):
+    x = serializers.URLField(source='x_url')
+    github = serializers.URLField(source='github_url')
+    telegram = serializers.URLField(source='telegram_url')
+
 class BaseProfileSerializer(serializers.ModelSerializer):
+    link = LinkSerializer(source='*')
     elapsed_time = serializers.SerializerMethodField()
     profile_img = serializers.ImageField(use_url=True, required=False)
 
     class Meta:
         model = Profile
-        fields = ['name', 'profile_img', 'elapsed_time', 'x_url', 'github_url', 'telegram_url']
+        fields = ['name', 'profile_img', 'link', 'elapsed_time']
     
     def get_elapsed_time(self, obj):
         now = timezone.now()
@@ -38,14 +44,12 @@ class BaseProfileSerializer(serializers.ModelSerializer):
         ret['address'] = instance.user.wallet_address
         return ret
 
-class ProfileReadSerializer(BaseProfileSerializer):
+class ProfileDetailSerializer(BaseProfileSerializer):
     project_of_user = serializers.SerializerMethodField()
     contribution_list = serializers.SerializerMethodField()
 
     class Meta(BaseProfileSerializer.Meta):
-        fields = BaseProfileSerializer.Meta.fields + [
-            'email', 'address', 'project_of_user', 'contribution_list', 'visible'
-        ]
+        fields =  ['name', 'email', 'address', 'profile_img', 'link', 'project_of_user', 'contribution_list', 'visible', 'elapsed_time']
 
     def get_project_of_user(self, obj):
         return []

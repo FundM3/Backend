@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from main.apps.profile.serializers.serializer import UpdateProfileSerializer, ProfileReadSerializer, ProfileListSerializer
+from rest_framework import status
+from main.apps.profile.serializers.serializer import UpdateProfileSerializer, ProfileDetailSerializer, ProfileListSerializer
 from main.apps.profile.models import Profile
 from main.apps.user.models import CustomUser
 
@@ -31,13 +31,15 @@ def update_profile_view(request):
 
 @api_view(['GET'])
 def get_profile_view(request, address):
-    profile = get_object_or_404(Profile, user__wallet_address=address)
-    print('profile', profile)
-    serializer = ProfileReadSerializer(profile)
-    return Response({'status': 'success', 'data': serializer.data})
+    try:
+        profile = Profile.objects.get(user__wallet_address=address)
+        serializer = ProfileDetailSerializer(profile, context={'request': request})
+        return Response({'status': 'success', 'data': serializer.data})
+    except Profile.DoesNotExist:
+        return Response({'status': 'error', 'message': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 def get_profile_list(request):
     profiles = Profile.objects.all()
-    serializer = ProfileListSerializer(profiles, many=True)
+    serializer = ProfileListSerializer(profiles, many=True, context={'request': request})
     return Response({'status': 'success', 'data': serializer.data})

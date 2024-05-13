@@ -77,7 +77,6 @@ class ProjectDetailSerializer(BaseProjectSerializer):
 
     class Meta(BaseProjectSerializer.Meta):
         fields = ['project_name', 'tag_line', 'description', 'logo_img', 'project_img', 'link', 'contribution_list', 'owner', 'elapsed_time']
-        print('fields:\n', fields)
 
     def get_project_img(self, obj):
         return [img.image.url for img in obj.images.all()]

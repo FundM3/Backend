@@ -52,7 +52,7 @@ class BaseProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['project_name', 'tag_line', 'logo_img', 'owner', 'elapsed_time']
+        fields = ['id', 'project_name', 'tag_line', 'logo_img', 'owner', 'elapsed_time']
     
     def get_elapsed_time(self, obj):
         now = timezone.now()
@@ -76,7 +76,7 @@ class ProjectDetailSerializer(BaseProjectSerializer):
     contribution_list = serializers.SerializerMethodField()
 
     class Meta(BaseProjectSerializer.Meta):
-        fields = ['project_name', 'tag_line', 'description', 'logo_img', 'project_img', 'link', 'contribution_list', 'owner', 'elapsed_time']
+        fields = ['id', 'project_name', 'tag_line', 'description', 'logo_img', 'project_img', 'link', 'contribution_list', 'owner', 'elapsed_time']
 
     def get_project_img(self, obj):
         return [img.image.url for img in obj.images.all()]

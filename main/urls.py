@@ -19,9 +19,11 @@ from main.utils.env_loader import env_loader
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('main.apps.user.api.urls')),
     path('api/v1/', include('main.apps.profile.api.urls')),
     path('api/v1/', include('main.apps.project.api.urls')),
+    path('api/v1/', include('main.apps.contribution.api.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

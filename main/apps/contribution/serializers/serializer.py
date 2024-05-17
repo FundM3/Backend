@@ -58,11 +58,8 @@ class ContributionListSerializer(serializers.ModelSerializer):
 
     def get_sender_profile(self, obj):
         try:
-            print('obj.sender_address', obj.sender_address)
             profile = Profile.objects.get(user__wallet_address=obj.sender_address)
-            print('profile', profile)
             return ProfileSerializer(profile, context={'request': self.context.get('request')}).data
-            # return ProfileSerializer(profile).data
         except Profile.DoesNotExist:
             return {
                 "name": "anonymous",

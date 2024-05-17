@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from django.utils import timezone
 from main.apps.profile.models import Profile
+from main.apps.project.models import Project
+from main.apps.contribution.models import Contribution
+from main.apps.contribution.serializers import ContributionListSerializer
 
 
 class UpdateProfileSerializer(serializers.ModelSerializer):
@@ -13,6 +16,11 @@ class LinkSerializer(serializers.Serializer):
     x = serializers.URLField(source='x_url')
     github = serializers.URLField(source='github_url')
     telegram = serializers.URLField(source='telegram_url')
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ['id', 'project_name', 'tag_line', 'logo_img']
 
 class BaseProfileSerializer(serializers.ModelSerializer):
     link = LinkSerializer(source='*')
@@ -52,10 +60,12 @@ class ProfileDetailSerializer(BaseProfileSerializer):
         fields =  ['name', 'email', 'address', 'profile_img', 'link', 'project_of_user', 'contribution_list', 'visible', 'elapsed_time']
 
     def get_project_of_user(self, obj):
-        return []
+        projects = Project.objects.filter(user__wallet_address=obj.user.wallet_address)
+        return ProjectSerializer(projects, context={'request': self.context.get('request')}, many=True).data
 
     def get_contribution_list(self, obj):
-        return []
+        contribution_list = Contribution.objects.filter(receiver_address=obj.user.wallet_address)
+        return ContributionListSerializer(contribution_list, context={'request': self.context.get('request')}, many=True).data
 
     def get_email(self, obj):
         return obj.user.email

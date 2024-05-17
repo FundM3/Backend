@@ -2,6 +2,8 @@ from rest_framework import serializers
 from django.utils import timezone
 from main.apps.project.models import Project, ProjectImage
 from main.apps.profile.models import Profile
+from main.apps.contribution.models import Contribution
+from main.apps.contribution.serializers import ContributionListSerializer
 
 
 class CreateProjectSerializer(serializers.ModelSerializer):
@@ -82,7 +84,8 @@ class ProjectDetailSerializer(BaseProjectSerializer):
         return [img.image.url for img in obj.images.all()]
 
     def get_contribution_list(self, obj):
-        return []
+        contribution_list = Contribution.objects.filter(receiver_address=obj.user.wallet_address)
+        return ContributionListSerializer(contribution_list, context={'request': self.context.get('request')}, many=True).data
 
 class ProjectListSerializer(BaseProjectSerializer):
     class Meta(BaseProjectSerializer.Meta):
